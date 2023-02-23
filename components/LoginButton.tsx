@@ -4,7 +4,7 @@ import Picket, { ChainType } from "@picketapi/picket-js";
 
 import { useAccount, useSigner } from "wagmi";
 
-import { LockClosedIcon } from "@heroicons/react/20/solid";
+import { LockClosedIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
 
 enum State {
   Sign = "Sign",
@@ -73,16 +73,27 @@ export default function LoginButton() {
   };
 
   return (
-    <>
+    <div>
+      <p className="text-gray-600 pb-2 text-sm">
+        You&apos;re connected. Click the button below to sign in.
+      </p>
       <button
         onClick={login}
         className="group relative flex w-full justify-center rounded-md border border-transparent bg-[#3496ff] py-2.5 px-4 text-sm font-medium text-white hover:bg-[#0f7df2] focus:outline-none focus:ring-2 focus:ring-[#0f7df2] focus:ring-offset-2"
       >
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <LockClosedIcon
-            className="h-5 w-5 text-[white] group-hover:text-gray-50"
-            aria-hidden="true"
-          />
+          {state !== State.Success && (
+            <LockClosedIcon
+              className="h-5 w-5 text-[white] group-hover:text-gray-50"
+              aria-hidden="true"
+            />
+          )}
+          {state === State.Success && (
+            <CheckCircleIcon
+              className="h-5 w-5 text-[white] group-hover:text-gray-50"
+              aria-hidden="true"
+            />
+          )}
         </span>
         {(state === State.Sign || state === State.Error) &&
           "Sign in with Ethereum"}
@@ -91,8 +102,8 @@ export default function LoginButton() {
         {state === State.Success && "You are logged in!"}
       </button>
       {state === State.Error && (
-        <div className="text-red-500">Something went wrong</div>
+        <div className="text-red-500 pt-2">Something went wrong</div>
       )}
-    </>
+    </div>
   );
 }

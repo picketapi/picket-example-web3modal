@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Picket from "@picketapi/picket-js";
+import Picket, { ChainType } from "@picketapi/picket-js";
 
 import { useAccount, useSigner } from "wagmi";
 
@@ -41,7 +41,7 @@ export default function LoginButton() {
         uri,
         issuedAt,
         chainId: 1,
-        chainType: "ethereum",
+        chainType: "ethereum" as ChainType,
         locale: navigator?.language,
       };
 
@@ -59,11 +59,13 @@ export default function LoginButton() {
       const { accessToken } = await picket.auth({
         walletAddress: address,
         signature,
+        chain: "ethereum",
         context,
       });
       setState(State.Success);
 
       // Now you can use the access token to authenticate with your backend
+      console.log(accessToken);
     } catch (err) {
       console.error(err);
       setState(State.Error);

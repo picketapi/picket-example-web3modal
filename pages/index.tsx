@@ -46,7 +46,7 @@ export default function Home() {
 
             <div className="flex flex-col items-center space-y-8">
               <Web3Button />
-              {isConnected && <LoginButton />}
+              <LoginButton />
             </div>
           </div>
         </div>

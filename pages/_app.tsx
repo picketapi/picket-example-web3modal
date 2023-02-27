@@ -13,6 +13,8 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 
 import { arbitrum, mainnet, polygon } from "wagmi/chains";
 
+import { PicketProvider } from "@picketapi/picket-react";
+
 const chains = [arbitrum, mainnet, polygon];
 
 // Wagmi client
@@ -39,9 +41,11 @@ const ethereumClient = new EthereumClient(wagmiClient, chains);
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
-        <Component {...pageProps} />
-      </WagmiConfig>
+      <PicketProvider apiKey={process.env.NEXT_PUBLIC_PICKET_API_KEY || ""}>
+        <WagmiConfig client={wagmiClient}>
+          <Component {...pageProps} />
+        </WagmiConfig>
+      </PicketProvider>
       <Web3Modal
         projectId={process.env.NEXT_PUBLIC_PROJECT_ID || ""}
         ethereumClient={ethereumClient}

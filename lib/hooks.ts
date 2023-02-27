@@ -13,25 +13,25 @@ export enum LoginStatus {
   Error = "Error",
 }
 
-export type WagmiAuthProps = {
+export type HeadlessAuthProps = {
   onLogin?: (authState: AuthState) => void;
   autoLogin?: boolean;
   autoLogout?: boolean;
 };
 
-export type WagmiAuthResponse = {
+export type HeadlessAuthResponse = {
   login: () => Promise<void>;
   logout: () => Promise<void>;
   status: LoginStatus;
   error: Error | null;
 };
 
-export const useWagmiAuth = (
-  { onLogin, autoLogin = false, autoLogout = false }: WagmiAuthProps = {
+export const useHeadlessAuth = (
+  { onLogin, autoLogin = false, autoLogout = false }: HeadlessAuthProps = {
     autoLogin: false,
     autoLogout: false,
   }
-): WagmiAuthResponse => {
+): HeadlessAuthResponse => {
   const [status, setStatus] = useState<LoginStatus>(LoginStatus.None);
   const [error, setError] = useState<Error | null>(null);
 

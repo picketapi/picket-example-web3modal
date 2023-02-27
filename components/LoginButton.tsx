@@ -1,11 +1,11 @@
 import { LockClosedIcon, CheckCircleIcon } from "@heroicons/react/20/solid";
 import { useAccount } from "wagmi";
 
-import { useWagmiAuth, LoginStatus } from "@/lib/hooks";
+import { useHeadlessAuth, LoginStatus } from "@/lib/hooks";
 
 export default function LoginButton() {
   const { isConnected } = useAccount();
-  const { login, status, logout } = useWagmiAuth({
+  const { login, status, logout } = useHeadlessAuth({
     autoLogout: true,
     autoLogin: true,
   });

@@ -7,6 +7,7 @@ export default function LoginButton() {
   const { isConnected } = useAccount();
   const { login, status, logout } = useWagmiAuth({
     autoLogout: true,
+    autoLogin: true,
   });
 
   if (!isConnected) return null;

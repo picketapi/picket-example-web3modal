@@ -1,6 +1,10 @@
 import { useState, useCallback, useEffect } from "react";
 
-import Picket, { ChainType, AuthState } from "@picketapi/picket-js";
+import Picket, {
+  ChainType,
+  AuthState,
+  AuthRequirements,
+} from "@picketapi/picket-js";
 import { usePicket } from "@picketapi/picket-react";
 
 import { useAccount, useDisconnect, useNetwork } from "wagmi";
@@ -17,6 +21,7 @@ export type HeadlessAuthProps = {
   onLogin?: (authState: AuthState) => void;
   autoLogin?: boolean;
   autoLogout?: boolean;
+  requirements?: AuthRequirements;
 };
 
 export type HeadlessAuthResponse = {
@@ -27,7 +32,12 @@ export type HeadlessAuthResponse = {
 };
 
 export const useHeadlessAuth = (
-  { onLogin, autoLogin = false, autoLogout = false }: HeadlessAuthProps = {
+  {
+    onLogin,
+    autoLogin = false,
+    autoLogout = false,
+    requirements,
+  }: HeadlessAuthProps = {
     autoLogin: false,
     autoLogout: false,
   }
@@ -36,6 +46,7 @@ export const useHeadlessAuth = (
   const [error, setError] = useState<Error | null>(null);
 
   const {
+    isAuthenticating,
     auth,
     nonce: generateNonce,
     authState,
@@ -53,6 +64,7 @@ export const useHeadlessAuth = (
     // and user is not already logged in
     // or if the user is already logged in, but the address has changed
     if (!(isConnected && address && connector && chain)) return;
+    if (isAuthenticating) return;
     if (user && user.walletAddress === address) return;
 
     const chainId = chain.id;
@@ -124,6 +136,7 @@ export const useHeadlessAuth = (
         signature,
         chain: chainSlug,
         context,
+        requirements,
       });
 
       if (!authState) {
@@ -145,6 +158,7 @@ export const useHeadlessAuth = (
 
   const loginCallback = useCallback(login, [
     isConnected,
+    isAuthenticating,
     address,
     connector,
     chain,
@@ -152,14 +166,15 @@ export const useHeadlessAuth = (
     generateNonce,
     user,
     onLogin,
+    requirements,
   ]);
 
   // auto login on connect
   useEffect(() => {
-    if (autoLogin && isConnected) {
+    if (autoLogin && isConnected && !isAuthenticating) {
       loginCallback();
     }
-  }, [loginCallback, autoLogin, isConnected]);
+  }, [loginCallback, autoLogin, isConnected, isAuthenticating]);
 
   const logout = async () => {
     await disconnectAsync();
